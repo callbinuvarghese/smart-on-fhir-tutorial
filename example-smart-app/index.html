@@ -26,9 +26,16 @@
             document.getElementById('name').innerHTML = getPatientName(pt);
         }
 
-        function displyaPatientDOB(pt) {
+        function displayPatientDOB(pt) {
             if (pt.birthDate) {
                 document.getElementById("dob").innerHTML = pt.birthDate.toString();
+            } else {
+                echo("Could not get DOB");
+            }
+        }
+        function displayPatientGender(pt) {
+            if (pt.gender) {
+                document.getElementById("gender").innerHTML = pt.gender.toString();
             } else {
                 echo("Could not get DOB");
             }
@@ -37,8 +44,8 @@
         FHIR.oauth2.ready(function(smart) {
             smart.patient.read().then(function(pt) {
                 displayPatient (pt);
-                displyaPatientDOB(pt);
-                //displayPatientGender(pt);
+                displayPatientDOB(pt);
+                displayPatientGender(pt);
             });
            
         });
