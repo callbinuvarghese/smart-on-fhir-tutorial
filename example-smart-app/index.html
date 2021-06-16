@@ -13,6 +13,9 @@
     <span id="gender">Loading Patient Gender...</span></h1>
     </br><br>
 
+    <span id="mrn">Loading Patient MRN...</span></h1>
+    </br><br>
+    
     <script type="text/javascript">
         function getPatientName(pt) {
             if (pt.name) {
@@ -43,12 +46,33 @@
                 echo("Could not get DOB");
             }
         }
+        function getMRNIdentifier(patient) {
+            const identifiers = patient.identifier ? patient.identifier : [];
+            const identifier = identifiers.filter(identifier => {
+                if (!identifier.type) return false;
+                if (!identifier.type.coding) return false;
+                const v = identifier.type.coding.find(code => {
+                    return code.code === "MR";
+                });
+                return v !== undefined;
+            })[0];
+            if (identifier) return identifier.value;
+            else return undefined;
+        }
+
+        function displayPatientMRN(pt) {
+            if (pt.identifier) {
+                document.getElementById("mrn").innerHTML = getMRNIdentifier(pt);
+                echo("Could not get MRN");
+            }
+        }
       
         FHIR.oauth2.ready(function(smart) {
             smart.patient.read().then(function(pt) {
                 displayPatient (pt);
                 displayPatientDOB(pt);
                 displayPatientGender(pt);
+                displayPatientMRN(pt);
             });
            
         });
